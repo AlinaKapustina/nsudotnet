@@ -12,18 +12,18 @@ namespace Kapustina.Nsudotnet.Calendar
         {
             Console.WriteLine("Enter date, please ");
             string date = Console.ReadLine();
-            DateTime result_date;
-            if (!DateTime.TryParse(date, out result_date))
+            DateTime resultDate;
+            if (!DateTime.TryParse(date, out resultDate))
             {
                 Console.WriteLine("Error date format!");
             }
             else
             {
-                string[] weeks_days = new string[7];
+                string[] weeksDays = new string[7];
                 int i = 6;
                 foreach (var value in Enum.GetValues(typeof(DayOfWeek)))
                 {
-                    weeks_days[i] =   value.ToString().Substring(0,3);
+                    weeksDays[i] =   value.ToString().Substring(0,3);
                     if (i == 6)
                     {
                         i = -1;
@@ -32,14 +32,14 @@ namespace Kapustina.Nsudotnet.Calendar
                 }
                 for (int j = 0; j < 7; j++)
                 {
-                    Console.Write("{0,-6}", weeks_days[j]);
+                    Console.Write("{0,-6}", weeksDays[j]);
                 }
                 Console.WriteLine();
-                DateTime begin_month;
-                DateTime.TryParse("01." + result_date.Month +"."+ result_date.Year, out begin_month);
+                DateTime beginMonth;
+                DateTime.TryParse("01." + resultDate.Month +"."+ resultDate.Year, out beginMonth);
                 i = 0;
-                string begin_day = begin_month.DayOfWeek.ToString().Substring(0, 3);
-                while (!begin_day.Equals(weeks_days[i]))
+                string beginDay = beginMonth.DayOfWeek.ToString().Substring(0, 3);
+                while (!beginDay.Equals(weeksDays[i]))
                 {
                     i++;
                 }
@@ -47,12 +47,12 @@ namespace Kapustina.Nsudotnet.Calendar
                 Console.SetCursorPosition(i * 6, Console.CursorTop);
                 Console.Write("{0,-6}", number);
                 int weekend = 0;
-                while(number<= DateTime.DaysInMonth(result_date.Year,result_date.Month))
+                while(number<= DateTime.DaysInMonth(resultDate.Year,resultDate.Month))
                 {
                     for (int k = i+1; k < 7; k++)
                     {
                         number++;
-                        if (number > DateTime.DaysInMonth(result_date.Year,result_date.Month))
+                        if (number > DateTime.DaysInMonth(resultDate.Year,resultDate.Month))
                         {
                             break;
                         }
@@ -62,11 +62,11 @@ namespace Kapustina.Nsudotnet.Calendar
                             weekend++;
                             Console.ForegroundColor = ConsoleColor.Red;
                         }
-                        if (number == DateTime.Now.Day && (result_date.Month == DateTime.Now.Month) && (result_date.Year == DateTime.Now.Year))
+                        if (number == DateTime.Now.Day && (resultDate.Month == DateTime.Now.Month) && (resultDate.Year == DateTime.Now.Year))
                         {
                             Console.BackgroundColor = ConsoleColor.Gray;
                         }
-                        if (number == result_date.Day)
+                        if (number == resultDate.Day)
                         {
                             Console.BackgroundColor = ConsoleColor.Blue;
                         }
@@ -74,8 +74,9 @@ namespace Kapustina.Nsudotnet.Calendar
                         Console.ResetColor();
                     }
                     Console.WriteLine();
+                    i = -1;
                 }
-                Console.WriteLine("Working days: {0}" , DateTime.DaysInMonth(result_date.Year, result_date.Month) - weekend);
+                Console.WriteLine("Working days: {0}" , DateTime.DaysInMonth(resultDate.Year, resultDate.Month) - weekend);
             }
         }
     }
