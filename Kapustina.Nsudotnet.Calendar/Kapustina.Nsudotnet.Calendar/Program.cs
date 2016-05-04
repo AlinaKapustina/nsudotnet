@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Kapustina.Nsudotnet.Calendar
 {
@@ -19,30 +20,21 @@ namespace Kapustina.Nsudotnet.Calendar
             }
             else
             {
-                string[] weeksDays = new string[7];
-                int i = 6;
-                foreach (var value in Enum.GetValues(typeof(DayOfWeek)))
-                {
-                    weeksDays[i] =   value.ToString().Substring(0,3);
-                    if (i == 6)
-                    {
-                        i = -1;
-                    }
-                    i++;
-                }
+                DateTime week = new DateTime(2016, 5, 2);
                 for (int j = 0; j < 7; j++)
                 {
-                    Console.Write("{0,-6}", weeksDays[j]);
+                    Console.Write("{0,-6}", week.ToString("ddd", CultureInfo.GetCultureInfo("ru-ru")));
+                    week = week.AddDays(1);
                 }
                 Console.WriteLine();
-                DateTime beginMonth;
-                DateTime.TryParse("01." + resultDate.Month +"."+ resultDate.Year, out beginMonth);
-                i = 0;
-                string beginDay = beginMonth.DayOfWeek.ToString().Substring(0, 3);
-                while (!beginDay.Equals(weeksDays[i]))
+                DateTime d = new DateTime(resultDate.Year, resultDate.Month, 1);
+               int  i = 0;
+                int beginDay = (int)d.DayOfWeek-1;
+                if (beginDay == -1)
                 {
-                    i++;
+                    beginDay += 7;
                 }
+                i = beginDay;
                 int number = 1;
                 Console.SetCursorPosition(i * 6, Console.CursorTop);
                 Console.Write("{0,-6}", number);
@@ -77,6 +69,7 @@ namespace Kapustina.Nsudotnet.Calendar
                     i = -1;
                 }
                 Console.WriteLine("Working days: {0}" , DateTime.DaysInMonth(resultDate.Year, resultDate.Month) - weekend);
+                Console.ReadKey();
             }
         }
     }
