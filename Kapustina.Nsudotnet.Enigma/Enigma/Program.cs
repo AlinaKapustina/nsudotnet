@@ -23,6 +23,7 @@ namespace Enigma
                 case "rijndael": EncryptorType(new RijndaelManaged(), file_output, file_input);
                     break;
                 default:
+                    Console.WriteLine("Неверный параметр");
                     break;
             }
             
@@ -41,16 +42,16 @@ namespace Enigma
                 case "rijndael": DecryptorType(new RijndaelManaged(), file_output, key, file_input);
                     break;
                 default:
+                    Console.WriteLine("Неверный параметр");
                     break;
             }
         }
 
 
-        static void DecryptorType(SymmetricAlgorithm sa, string file_output, string key, string file_input)
+        static void DecryptorType(SymmetricAlgorithm sa, string file_output, string key, string file_input) 
         {
             byte[] key_byte;
             byte[] iv_byte;
-            UnicodeEncoding e = new UnicodeEncoding();
             using (StreamReader key_file = new StreamReader(key))
             {
                 String s = key_file.ReadLine();
@@ -63,16 +64,9 @@ namespace Enigma
             {
                 using (FileStream input = new FileStream(file_input, FileMode.Create, FileAccess.Write))
                 {
-
                     CryptoStream stream = new CryptoStream(input, transform, CryptoStreamMode.Write);
-                    byte[] decrypto_byte = new byte[64];
-                    int size = 1;
-                    while (size != 0)
-                    {
-                        size = output.Read(decrypto_byte, 0, decrypto_byte.Length);
-                        stream.Write(decrypto_byte, 0, size);
-                    }
-                    stream.FlushFinalBlock();
+                    output.CopyTo(stream);
+                    stream.Close();
                 }
             }
         }
@@ -85,16 +79,9 @@ namespace Enigma
             using (FileStream file = new FileStream(file_output, FileMode.Create, FileAccess.Write))
             {
                 CryptoStream stream = new CryptoStream(file, transform, CryptoStreamMode.Write);
-
                 using (FileStream input = new FileStream(file_input, FileMode.Open))
                 {
-                    Byte[] bytes = new Byte[64];
-                    int size = 1;
-                    while (size != 0)
-                    {
-                        size = input.Read(bytes, 0, bytes.Length);
-                        stream.Write(bytes, 0, size);
-                    }
+                    input.CopyTo(stream);
                 }
                 using (StreamWriter key = new StreamWriter("file.key.txt"))
                 {
@@ -103,21 +90,30 @@ namespace Enigma
                     s = Convert.ToBase64String(sa.Key);
                     key.Write(s);
                 }
-                stream.FlushFinalBlock();
+                stream.Close();
             }
         }
 
         static void Main(string[] args)
         {
-            switch(args[0])
+            try
             {
-                case "encrypt": Encrypt(args[1], args[2], args[3]);
-                    break;
-                case "decrypt": Decrypt(args[1], args[2], args[3], args[4]);
-                    break;
-                default:
-                    break;
-            }      
+                switch (args[0])
+                {
+                    case "encrypt": Encrypt(args[1], args[2], args[3]);
+                        break;
+                    case "decrypt": Decrypt(args[1], args[2], args[3], args[4]);
+                        break;
+                    default:
+                        Console.WriteLine("Неверный параметр");
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.ReadKey();
+            }
         }
     }
 }
