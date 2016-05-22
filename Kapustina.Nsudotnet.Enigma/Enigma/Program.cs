@@ -64,9 +64,9 @@ namespace Enigma
             {
                 using (FileStream input = new FileStream(file_input, FileMode.Create, FileAccess.Write))
                 {
-                    CryptoStream stream = new CryptoStream(input, transform, CryptoStreamMode.Write);
+                    using(CryptoStream stream = new CryptoStream(input, transform, CryptoStreamMode.Write))
                     output.CopyTo(stream);
-                    stream.Close();
+                  
                 }
             }
         }
@@ -78,7 +78,7 @@ namespace Enigma
             ICryptoTransform transform = sa.CreateEncryptor(sa.Key, sa.IV);
             using (FileStream file = new FileStream(file_output, FileMode.Create, FileAccess.Write))
             {
-                CryptoStream stream = new CryptoStream(file, transform, CryptoStreamMode.Write);
+               using( CryptoStream stream = new CryptoStream(file, transform, CryptoStreamMode.Write))
                 using (FileStream input = new FileStream(file_input, FileMode.Open))
                 {
                     input.CopyTo(stream);
@@ -90,7 +90,6 @@ namespace Enigma
                     s = Convert.ToBase64String(sa.Key);
                     key.Write(s);
                 }
-                stream.Close();
             }
         }
 
